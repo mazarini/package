@@ -17,8 +17,13 @@
  * You should have received a copy of the GNU General Public License
  */
 
-return [
-    Mazarini\PackageBundle\MazariniPackageBundle::class => ['dev' => true],
-    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
-    Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
-];
+namespace Mazarini\PackageBundle;
+
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+/**
+ * @author Mazarini <mazarini@protonmail.com>
+ */
+class MazariniPackageBundle extends Bundle
+{
+}

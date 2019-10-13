@@ -17,23 +17,29 @@
  * You should have received a copy of the GNU General Public License
  */
 
-namespace App\Command;
+namespace Mazarini\PackageBundle\Command;
 
-use App\Tool\Loader;
+use Mazarini\PackageBundle\Tool\Loader;
+use Symfony\Bundle\FrameworkBundle\Console\Helper\DescriptorHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class InstalledCommand extends Command
+class RequireCommand extends Command
 {
-    protected static $defaultName = 'app:installed';
+    protected static $defaultName = 'package:require';
 
     protected function configure()
     {
         $this
-            ->setDescription('List the intalled packages')
+        ->setDefinition([
+        ])
+            ->setDescription('List the required packages')
+            ->addOption('dev', null, InputOption::VALUE_NONE, 'require-dev only')
+            ->addOption('no-dev', null, InputOption::VALUE_NONE, 'require only')
         ;
     }
 
@@ -41,14 +47,24 @@ class InstalledCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
+        $dev = $input->getOption('dev');
+        $prod = $input->getOption('no-dev');
+        if (!$dev && !$prod) {
+            $dev = true;
+            $prod = true;
+        }
+
         $loader = new Loader();
-        $require = $loader->getRequire(true, true);
+        $helper = new DescriptorHelper(null);
+        $installed = $loader->getInstalled($dev, $prod);
         $lines = [];
-        foreach ($loader->getInstalled(true, true) as $name => $data) {
-            $lines[] = [$name, $data['version'], $data['dev']];
+        foreach ($loader->getRequire($dev, $prod) as $name => $data) {
+            if ((($dev && $data['dev']) or ($prod && !$data['dev'])) && isset($installed[$name])) {
+                $lines[] = [$name, $data['version'], $installed[$name]['version'], $data['dev']];
+            }
         }
         $table = new table($output);
-        $table->setHeaders(['package', 'version', 'dev']);
+        $table->setHeaders(['package', 'req.', 'install', 'dev']);
         $table->setRows($lines);
         $table->render();
         echo \count($lines),' packages.',PHP_EOL;

@@ -24,14 +24,14 @@ twig:
 #	twigcs lib/Resources/views -vv
 
 yaml:
-	bin/console lint:yaml config phpstan.neon.dist
+	bin/console lint:yaml lib/Resources/config config phpstan.neon.dist
 
 cs:
 	php-cs-fixer fix
 
 stan:
 	if [ ! -d "var/cache/phpunit" ]; then vendor/bin/simple-phpunit install -v; fi
-	phpstan analyse src tests --level max
+	phpstan analyse lib src tests --level max
 
 validate: security composer twig yaml stan cs
 
@@ -47,6 +47,9 @@ validate: security composer twig yaml stan cs
 
 7.3:
 	sudo update-alternatives --set php /usr/bin/php7.3
+
+7.4:
+	sudo update-alternatives --set php /usr/bin/php7.4
 
 ############################################
 #      S Y M F O N Y   V E R S I O N       #

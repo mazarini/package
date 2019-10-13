@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  */
 
-namespace App\Tool;
+namespace Mazarini\PackageBundle\Tool;
 
 class Loader
 {

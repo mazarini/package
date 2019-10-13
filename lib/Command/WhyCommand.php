@@ -17,10 +17,9 @@
  * You should have received a copy of the GNU General Public License
  */
 
-namespace App\Command;
+namespace Mazarini\PackageBundle\Command;
 
-use App\Tool\Loader;
-use Symfony\Bundle\FrameworkBundle\Console\Helper\DescriptorHelper;
+use Mazarini\PackageBundle\Tool\Loader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
@@ -28,9 +27,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class RequireCommand extends Command
+class WhyCommand extends Command
 {
-    protected static $defaultName = 'app:require';
+    protected static $defaultName = 'package:why';
 
     protected function configure()
     {
@@ -55,18 +54,33 @@ class RequireCommand extends Command
         }
 
         $loader = new Loader();
-        $helper = new DescriptorHelper(null);
-        $installed = $loader->getInstalled($dev, $prod);
+        $requires = $loader->getRequire(true, true);
         $lines = [];
-        foreach ($loader->getRequire($dev, $prod) as $name => $data) {
-            if ((($dev && $data['dev']) or ($prod && !$data['dev'])) && isset($installed[$name])) {
-                $lines[] = [$name, $data['version'], $installed[$name]['version'], $data['dev']];
+        $whys = $loader->getWhy();
+        foreach ($whys as $why => $becauses) {
+            if (('php' !== $why) && ('ext-' !== mb_substr($why, 0, 4))) {
+                foreach ($becauses as $because => $dummy) {
+                    if ('require' !== $because) {
+                        if (isset($requires[$because])) {
+                            if ('yes' === $requires[$because]['dev']) {
+                                if ($dev) {
+                                    $require = 'require-dev';
+                                    $lines[] = [$why, $because, $require];
+                                }
+                            } else {
+                                if ($prod) {
+                                    $require = 'require';
+                                    $lines[] = [$why, $because, $require];
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
         $table = new table($output);
-        $table->setHeaders(['package', 'req.', 'install', 'dev']);
+        $table->setHeaders(['why', 'because', 'composer']);
         $table->setRows($lines);
         $table->render();
-        echo \count($lines),' packages.',PHP_EOL;
     }
 }
