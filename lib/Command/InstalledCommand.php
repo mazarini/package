@@ -51,6 +51,6 @@ class InstalledCommand extends Command
         $table->setHeaders(['package', 'version', 'dev']);
         $table->setRows($lines);
         $table->render();
-        echo \count($lines),' packages.',PHP_EOL;
+        $output->writeln(sprintf('%d packages.', \count($lines)));
     }
 }

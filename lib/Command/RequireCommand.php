@@ -67,6 +67,6 @@ class RequireCommand extends Command
         $table->setHeaders(['package', 'req.', 'install', 'dev']);
         $table->setRows($lines);
         $table->render();
-        echo \count($lines),' packages.',PHP_EOL;
+        $output->writeln(sprintf('%d packages.', \count($lines)));
     }
 }

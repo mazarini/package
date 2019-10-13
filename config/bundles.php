@@ -18,7 +18,7 @@
  */
 
 return [
-    Mazarini\PackageBundle\MazariniPackageBundle::class => ['dev' => true],
+    Mazarini\PackageBundle\MazariniPackageBundle::class => ['all' => true],
     Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
 ];
