@@ -1,0 +1,91 @@
+language: php
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+    - $HOME/.composer/vendor
+    - ./var/cache/phpunit
+
+env:
+  global:
+    - SYMFONY_PHPUNIT_DIR=./var/cache/phpunit
+    - SYMFONY_DEPRECATIONS_HELPER=29
+    - SYMFONY_PHPUNIT_COMPOSER_OPTION=
+    - INSTALL="update"
+    - CONTROL=
+    - SYNFONY=
+
+matrix:
+  fast_finish: true
+  include:
+#   CONTROLE
+    - php: 7.2
+      env: INSTALL="install"
+           CONTROL="YES"
+#   PHP version
+    - php: 7.1.3
+    - php: 7.2
+      env: INSTALL="install"
+    - php: 7.3
+      env: INSTALL="install"
+    - php: 7.4snapshot
+      env: SYMFONY="4.3.*"
+    - php: nightly
+      env: SYMFONY="4.3.*"
+           SYMFONY_PHPUNIT_COMPOSER_OPTION="--ignore-platform-reqs"
+#   Symfony version
+    - php: 7.2
+      env: SYMFONY="4.3.*"
+    - php: 7.2
+      env: SYMFONY="4.4.*"
+    - php: 7.2
+      env: SYMFONY="5.0.*"
+  allow_failures:
+#   PHP version dev version
+    - php: 7.4snapshot
+      env: SYMFONY="4.3.*"
+    - php: nightly
+      env: SYMFONY="4.3.*"
+           SYMFONY_PHPUNIT_COMPOSER_OPTION="--ignore-platform-reqs"
+#   Symfony dev version
+    - php: 7.2
+      env: SYMFONY="4.3.*"
+    - php: 7.2
+      env: SYMFONY="4.4.*"
+    - php: 7.2
+      env: SYMFONY="5.0.*"
+
+before_install:
+  - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - export PATH=$PATH:$(composer global config bin-dir --absolute)
+  - composer self-update
+  - '[[ "$SYMFONY" == "" ]] || composer config extra.symfony.require $SYMFONY'
+  - '[[ "$SYMFONY" == "" ]] || composer config minimum-stability dev'
+
+
+install:
+  - '[[ "$CONTROL" == "" ]] || composer global require friendsofphp/php-cs-fixer symfony/flex sensiolabs/security-checker friendsoftwig/twigcs phpstan/phpstan-symfony'
+  - composer $INSTALL $SYMFONY_PHPUNIT_COMPOSER_OPTION
+  - '[[ "$SYMFONY_PHPUNIT_COMPOSER_OPTION" == "" ]] || cp var/data/simple-phpunit.php vendor/symfony/phpunit-bridge/bin/simple-phpunit.php'
+  - ./bin/phpunit install
+
+script:
+  - '[[ "$CONTROL" == "YES" ]] || ./bin/phpunit'
+  - '[[ "$CONTROL" == "" ]] || ./bin/phpunit -v --coverage-text'
+  - '[[ "$CONTROL" == "" ]] || security-checker security:check'
+  - '[[ "$CONTROL" == "" ]] || php-cs-fixer fix'
+  - '[[ "$CONTROL" == "" ]] || twigcs templates -vv'
+  - '[[ "$CONTROL" == "" ]] || twigcs lib/Resources/views -vv'
+  - '[[ "$CONTROL" == "" ]] || phpstan analyse lib src tests --level max'
+  - '[[ "$CONTROL" == "" ]] || bin/console lint:yaml config lib/Resources/config phpstan.neon.dist .travis.yml'
+  - '[[ "$CONTROL" == "" ]] || composer -vv validate --strict'
+
+
+
+
+
+
+
+
+

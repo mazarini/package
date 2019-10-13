@@ -4,7 +4,7 @@
 /.env.local.php
 /.env.*.local
 /public/bundles/
-/var/
+/var/*
 /vendor/
 ###< symfony/framework-bundle ###
 
@@ -13,3 +13,7 @@
 .phpunit.result.cache
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+
+###> local ###
+!var/data
+###< local ###
