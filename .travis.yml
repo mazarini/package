@@ -75,8 +75,6 @@ script:
   - '[[ "$CONTROL" == "" ]] || ./bin/phpunit -v --coverage-text'
   - '[[ "$CONTROL" == "" ]] || security-checker security:check'
   - '[[ "$CONTROL" == "" ]] || php-cs-fixer fix'
-  - '[[ "$CONTROL" == "" ]] || twigcs templates -vv'
-  - '[[ "$CONTROL" == "" ]] || twigcs lib/Resources/views -vv'
   - '[[ "$CONTROL" == "" ]] || phpstan analyse lib src tests --level max'
   - '[[ "$CONTROL" == "" ]] || bin/console lint:yaml config lib/Resources/config phpstan.neon.dist .travis.yml'
   - '[[ "$CONTROL" == "" ]] || composer -vv validate --strict'
