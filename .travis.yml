@@ -30,11 +30,11 @@ matrix:
     - php: 7.3
       env: INSTALL="install"
     - php: 7.4snapshot
-      env: SYMFONY="4.3.*"
+      env: INSTALL="install"
     - php: nightly
-      env: SYMFONY="4.3.*"
+      env: INSTALL="install"
            SYMFONY_PHPUNIT_COMPOSER_OPTION="--ignore-platform-reqs"
-#   Symfony version
+#   Symfony dev version
     - php: 7.2
       env: SYMFONY="4.3.*"
     - php: 7.2
@@ -44,9 +44,9 @@ matrix:
   allow_failures:
 #   PHP version dev version
     - php: 7.4snapshot
-      env: SYMFONY="4.3.*"
+      env: INSTALL="install"
     - php: nightly
-      env: SYMFONY="4.3.*"
+      env: INSTALL="install"
            SYMFONY_PHPUNIT_COMPOSER_OPTION="--ignore-platform-reqs"
 #   Symfony dev version
     - php: 7.2

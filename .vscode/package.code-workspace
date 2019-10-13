@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"path": "../"
+		},
+	],
+	"settings": {
+		"editor.formatOnSave": true,
+		"files.associations": {
+			"makefile.travis": "makefile",
+			".env.test": "dotenv",
+			"*.code-workspace": "json",
+			"composer.lock": "json",
+			"symfony.lock": "json",
+			"*phpstan.neon.dist": "yaml",
+			".scrutinizer": "yaml",
+			".php_cs.dist": "php",
+			"console": "php",
+			"phpunit": "php"
+		},
+		"files.insertFinalNewline": true,
+		"files.trimTrailingWhitespace": true,
+		"php-cs-fixer.onsave": true,
+	}
+}
