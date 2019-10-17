@@ -42,7 +42,7 @@ class WhyCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -82,5 +82,7 @@ class WhyCommand extends Command
         $table->setHeaders(['why', 'because', 'composer']);
         $table->setRows($lines);
         $table->render();
+
+        return 0;
     }
 }

@@ -37,7 +37,7 @@ class InstalledCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
 
@@ -52,5 +52,7 @@ class InstalledCommand extends Command
         $table->setRows($lines);
         $table->render();
         $output->writeln(sprintf('%d packages.', \count($lines)));
+
+        return 0;
     }
 }
