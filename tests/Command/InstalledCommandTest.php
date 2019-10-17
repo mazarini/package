@@ -36,7 +36,7 @@ class InstalledCommandTest extends KernelTestCase
             'command' => $command->getName(),
         ]);
         $output = $commandTester->getDisplay();
-        foreach (['symfony/console', 'symfony/dotenv', 'symfony/flex', 'symfony/framework-bundle', 'symfony/maker-bundle', 'symfony/test-pack', 'symfony/yaml'] as $package) {
+        foreach (['symfony/console', 'symfony/dotenv', 'symfony/flex', 'symfony/framework-bundle', 'symfony/test-pack', 'symfony/yaml'] as $package) {
             $this->assertContains($package, $output);
         }
     }
