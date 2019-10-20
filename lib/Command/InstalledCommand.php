@@ -42,13 +42,12 @@ class InstalledCommand extends Command
         $io = new SymfonyStyle($input, $output);
 
         $loader = new Loader();
-        $require = $loader->getRequire(true, true);
         $lines = [];
-        foreach ($loader->getInstalled(true, true) as $name => $data) {
-            $lines[] = [$name, $data['version'], $data['dev']];
+        foreach ($loader->getInstalled(true, true) as $package) {
+            $lines[] = [$package->getName(), $package->getVersion(), $package->getDev(), $package->getRequire(), $package->getRequireVersion()];
         }
         $table = new table($output);
-        $table->setHeaders(['package', 'version', 'dev']);
+        $table->setHeaders(['package', 'dev', 'version', 'require', 'version']);
         $table->setRows($lines);
         $table->render();
         $output->writeln(sprintf('%d packages.', \count($lines)));

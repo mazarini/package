@@ -23,7 +23,6 @@ use Mazarini\PackageBundle\Tool\Loader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -36,9 +35,7 @@ class WhyCommand extends Command
         $this
         ->setDefinition([
         ])
-            ->setDescription('List the required packages')
-            ->addOption('dev', null, InputOption::VALUE_NONE, 'require-dev only')
-            ->addOption('no-dev', null, InputOption::VALUE_NONE, 'require only')
+            ->setDescription('List who require a package')
         ;
     }
 
@@ -46,40 +43,18 @@ class WhyCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $dev = $input->getOption('dev');
-        $prod = $input->getOption('no-dev');
-        if (!$dev && !$prod) {
-            $dev = true;
-            $prod = true;
-        }
-
-        $loader = new Loader();
-        $requires = $loader->getRequire(true, true);
         $lines = [];
-        $whys = $loader->getWhy();
-        foreach ($whys as $why => $becauses) {
-            if (('php' !== $why) && ('ext-' !== mb_substr($why, 0, 4))) {
-                foreach ($becauses as $because => $dummy) {
-                    if ('require' !== $because) {
-                        if (isset($requires[$because])) {
-                            if ('yes' === $requires[$because]['dev']) {
-                                if ($dev) {
-                                    $require = 'require-dev';
-                                    $lines[] = [$why, $because, $require];
-                                }
-                            } else {
-                                if ($prod) {
-                                    $require = 'require';
-                                    $lines[] = [$why, $because, $require];
-                                }
-                            }
-                        }
-                    }
+        $loader = new Loader();
+        $packages = $loader->getWhy();
+        foreach ($packages as $package) {
+            foreach ($package->getRequirers() as $requirer) {
+                if ($package->getName() !== $requirer->getName()) {
+                    $lines[] = [$package->getName(), $requirer->getName(), $requirer->getRequire()];
                 }
             }
         }
         $table = new table($output);
-        $table->setHeaders(['why', 'because', 'composer']);
+        $table->setHeaders(['why is installed ?', 'because package', 'composer']);
         $table->setRows($lines);
         $table->render();
 

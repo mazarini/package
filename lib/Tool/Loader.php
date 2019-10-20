@@ -19,9 +19,12 @@
 
 namespace Mazarini\PackageBundle\Tool;
 
+use Mazarini\PackageBundle\Entity\Package;
+
 class Loader
 {
     private $why = [];
+    private $packages = [];
 
     protected function getFile(string $file): array
     {
@@ -36,85 +39,124 @@ class Loader
         return json_decode($content, true);
     }
 
-    public function getRequire($dev, $prod): array
+    public function getRequire(): array
     {
-        $array = $this->getfile('composer.json');
+        $this->loadPackages();
 
-        $require = [];
-        if ($prod) {
-            foreach ($array['require'] as $name => $version) {
-                $require[$name] = ['version' => $version, 'dev' => ''];
-            }
-        }
-        if ($dev) {
-            foreach ($array['require-dev'] as $name => $version) {
-                $require[$name] = ['version' => $version, 'dev' => 'yes'];
-            }
-        }
-        ksort($require);
-
-        return $require;
+        return array_filter($this->packages, function ($package) { return $package->isRequire(); });
     }
 
     public function getInstalled($dev, $prod): array
     {
-        $array = $this->getfile('composer.lock');
-        $installed = [];
-        if ($prod) {
-            foreach ($array['packages'] as $package) {
-                $installed[$package['name']] = ['version' => $package['version'], 'dev' => ''];
-            }
+        $this->loadPackages();
+
+        if ($dev === $prod) {
+            return $this->packages;
         }
         if ($dev) {
-            foreach ($array['packages-dev'] as $package) {
-                $installed[$package['name']] = ['version' => $package['version'], 'dev' => 'yes'];
-            }
+            return array_filter($this->packages, function ($package) { return true === $package->isDev; });
         }
-        ksort($installed);
 
-        return $installed;
+        return array_filter($this->packages, function ($package) { return false === $package->isDev; });
     }
 
     public function getWhy()
     {
-        $because = 'require';
-        $requires = $this->getRequire(true, true);
-        foreach ($requires as $why => $dummy) {
-            $this->why[$why][$because] = false;
-        }
-        $json = $this->getfile('composer.lock');
-        foreach ($json['packages'] as $package) {
-            foreach ($package['require'] as $why => $dummy) {
-                $this->why[$why][$package['name']] = true;
-            }
-        }
-        foreach ($json['packages-dev'] as $package) {
-            foreach ($package['require'] as $why => $version) {
-                $this->why[$why][$package['name']] = true;
-            }
-        }
+        $this->loadPackages();
+
         $end = false;
         while (!$end) {
             $end = true;
-            foreach ($this->why as $why => $becauses) {
-                foreach ($becauses as $because => $ko) {
-                    if ($ko) {
-                        $this->why[$why][$because] = false;
-                        foreach ($this->why[$because] as $because2 => $dummy) {
-                            if (!isset($this->why[$why][$because2])) {
-                                $this->why[$why][$because2] = ('require' !== $because2);
-                                $end = false;
-                            }
+            foreach ($this->packages as $package) {
+                foreach ($package->getRequirers() as $requirer) {
+                    foreach ($requirer->getRequirers() as $farRequirer) {
+                        if ($package->addRequirer($farRequirer)) {
+                            $end = false;
                         }
                     }
                 }
             }
         }
-        foreach ($this->why as $why => $becauses) {
-            ksort($this->why[$why]);
+        foreach ($this->packages as $package) {
+            $package->cleanRequirer();
         }
-        ksort($this->why);
+        ksort($this->packages);
 
-        return $this->why;
+        return $this->packages;
+    }
+
+    protected function loadRequire(array $packages, bool $dev = false)
+    {
+        foreach ($packages as $name => $version) {
+            $package = $this->getPackage($name, true);
+            $package->setRequireVersion($version)
+                    ->setRequireDev($dev)
+                    ->addRequirer($package);
+        }
+    }
+
+    protected function loadInstalled(array $packages, bool $dev = false): void
+    {
+        foreach ($packages as $data) {
+            $package = $this->getPackage($data['name']);
+            $package->setVersion($data['version'])
+                    ->setDev($dev);
+            foreach ($data['require'] as $name => $dummy) {
+                $this->addRequirer($name, $package);
+            }
+        }
+    }
+
+    protected function loadPackages(): void
+    {
+        if (\count($this->packages) > 0) {
+            return;
+        }
+        $array = $this->getfile('composer.lock');
+        $this->loadInstalled($array['packages'], false);
+        $this->loadInstalled($array['packages-dev'], true);
+        $array = $this->getfile('composer.json');
+        $this->loadRequire($array['require'], false);
+        $this->loadRequire($array['require-dev'], true);
+        ksort($this->packages);
+    }
+
+    protected function addRequirer(string $name, Package $requirer)
+    {
+        $package = $this->getPackage($name);
+        $package->addRequirer($requirer);
+    }
+
+    protected function getPackage(string $name, bool $require = false)
+    {
+        switch (true) {
+            case isset($this->packages[$name]):
+                $package = $this->packages[$name];
+                break;
+            case $require && 'php' === $name:
+                $package = new Package();
+                $package->setName($name);
+                $package->setVersion(PHP_VERSION);
+                $this->packages[$name] = $package;
+                break;
+            case $require && 'ext-' === mb_substr($name, 0, 4):
+                $package = new Package();
+                $package->setName($name);
+                $version = phpversion(mb_substr($name, 4));
+                if (\is_string($version)) {
+                    $package->setVersion($version);
+                }
+                $this->packages[$name] = $package;
+                break;
+            case $require:
+                throw new \RuntimeException(sprintf('The require package "%s" is not installed', $name));
+                break;
+            default:
+                $package = new Package();
+                $package->setName($name);
+                $this->packages[$name] = $package;
+        }
+
+        return $package;
     }
 }

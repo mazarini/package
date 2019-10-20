@@ -36,7 +36,7 @@ class RequireCommandTest extends KernelTestCase
             'command' => $command->getName(),
         ]);
         $output = $commandTester->getDisplay();
-        $this->assertContains('6 packages.', $output);
+        $this->assertContains('8 packages.', $output);
         foreach (['symfony/console', 'symfony/dotenv', 'symfony/flex', 'symfony/framework-bundle', 'symfony/test-pack', 'symfony/yaml'] as $package) {
             $this->assertContains($package, $output);
         }

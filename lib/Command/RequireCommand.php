@@ -24,7 +24,6 @@ use Symfony\Bundle\FrameworkBundle\Console\Helper\DescriptorHelper;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -38,8 +37,6 @@ class RequireCommand extends Command
         ->setDefinition([
         ])
             ->setDescription('List the required packages')
-            ->addOption('dev', null, InputOption::VALUE_NONE, 'require-dev only')
-            ->addOption('no-dev', null, InputOption::VALUE_NONE, 'require only')
         ;
     }
 
@@ -47,24 +44,14 @@ class RequireCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
 
-        $dev = $input->getOption('dev');
-        $prod = $input->getOption('no-dev');
-        if (!$dev && !$prod) {
-            $dev = true;
-            $prod = true;
-        }
-
         $loader = new Loader();
         $helper = new DescriptorHelper(null);
-        $installed = $loader->getInstalled($dev, $prod);
         $lines = [];
-        foreach ($loader->getRequire($dev, $prod) as $name => $data) {
-            if ((($dev && $data['dev']) or ($prod && !$data['dev'])) && isset($installed[$name])) {
-                $lines[] = [$name, $data['version'], $installed[$name]['version'], $data['dev']];
-            }
+        foreach ($loader->getRequire() as $package) {
+            $lines[] = [$package->getName(), $package->getRequire(), $package->getRequireVersion(), $package->getDev(), $package->getVersion()];
         }
         $table = new table($output);
-        $table->setHeaders(['package', 'req.', 'install', 'dev']);
+        $table->setHeaders(['package', 'require', 'version', 'install', 'version']);
         $table->setRows($lines);
         $table->render();
         $output->writeln(sprintf('%d packages.', \count($lines)));
