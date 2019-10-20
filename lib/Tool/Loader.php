@@ -133,13 +133,13 @@ class Loader
             case isset($this->packages[$name]):
                 $package = $this->packages[$name];
                 break;
-            case $require && 'php' === $name:
+            case 'php' === $name:
                 $package = new Package();
                 $package->setName($name);
                 $package->setVersion(PHP_VERSION);
                 $this->packages[$name] = $package;
                 break;
-            case $require && 'ext-' === mb_substr($name, 0, 4):
+            case 'ext-' === mb_substr($name, 0, 4):
                 $package = new Package();
                 $package->setName($name);
                 $version = phpversion(mb_substr($name, 4));
