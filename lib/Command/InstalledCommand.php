@@ -44,7 +44,7 @@ class InstalledCommand extends Command
         $loader = new Loader();
         $lines = [];
         foreach ($loader->getInstalled(true, true) as $package) {
-            $lines[] = [$package->getName(), $package->getVersion(), $package->getDev(), $package->getRequire(), $package->getRequireVersion()];
+            $lines[] = [$package->getName(), $package->getDev(), $package->getVersion(), $package->getRequire(), $package->getRequireVersion()];
         }
         $table = new table($output);
         $table->setHeaders(['package', 'dev', 'version', 'require', 'version']);
