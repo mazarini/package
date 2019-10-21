@@ -85,6 +85,24 @@ class Loader
         return $this->packages;
     }
 
+    public function getRecipes(): array
+    {
+        $this->loadPackages();
+
+        return array_filter($this->packages, function ($package) { return \count($package->getFiles()) > 0; });
+    }
+
+    protected function loadFiles(array $packages)
+    {
+        foreach ($packages as $name => $data) {
+            if (isset($data['files'])) {
+                foreach ($data['files'] as $file) {
+                    $this->addFile($name, $file);
+                }
+            }
+        }
+    }
+
     protected function loadRequire(array $packages, bool $dev = false)
     {
         foreach ($packages as $name => $version) {
@@ -119,12 +137,19 @@ class Loader
         $this->loadRequire($array['require'], false);
         $this->loadRequire($array['require-dev'], true);
         ksort($this->packages);
+        $this->loadFiles($this->getfile('symfony.lock'));
     }
 
     protected function addRequirer(string $name, Package $requirer)
     {
         $package = $this->getPackage($name);
         $package->addRequirer($requirer);
+    }
+
+    protected function addFile(string $name, string $file)
+    {
+        $package = $this->getPackage($name);
+        $package->addFile($file);
     }
 
     protected function getPackage(string $name, bool $require = false)
