@@ -52,7 +52,12 @@ class Package
 
     public function setVersion(string $version): self
     {
-        $this->version = $version;
+        if (mb_strlen($version) > 15) {
+            $parts = explode('-', $version);
+            $this->version = $parts[0];
+        } else {
+            $this->version = $version;
+        }
 
         return $this;
     }
