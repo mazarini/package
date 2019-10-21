@@ -33,6 +33,8 @@ class Package
 
     private $requirers = [];
 
+    private $files = [];
+
     public function getName(): string
     {
         return $this->name;
@@ -145,5 +147,17 @@ class Package
         ksort($this->requirers);
 
         return $this;
+    }
+
+    public function addFile(string $name): self
+    {
+        $this->files[] = ['name' => $name, 'delete' => file_exists($name) ? '' : 'delete'];
+
+        return $this;
+    }
+
+    public function getFiles(): array
+    {
+        return $this->files;
     }
 }
