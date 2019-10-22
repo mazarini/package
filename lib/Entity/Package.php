@@ -25,6 +25,8 @@ class Package
 
     private $version = '';
 
+    private $commit = '';
+
     private $requireVersion = '';
 
     private $dev = false;
@@ -59,6 +61,22 @@ class Package
             $this->version = $parts[0];
         } else {
             $this->version = $version;
+        }
+
+        return $this;
+    }
+
+    public function getCommit(): string
+    {
+        return $this->commit;
+    }
+
+    public function setCommit(string $commit): self
+    {
+        if (mb_strlen($commit) > 7) {
+            $this->commit = mb_substr($commit, -7);
+        } else {
+            $this->commit = $commit;
         }
 
         return $this;

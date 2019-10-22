@@ -44,10 +44,10 @@ class InstalledCommand extends Command
         $loader = new Loader();
         $lines = [];
         foreach ($loader->getInstalled(true, true) as $package) {
-            $lines[] = [$package->getName(), $package->getDev(), $package->getVersion(), $package->getRequire(), $package->getRequireVersion()];
+            $lines[] = [$package->getName(), $package->getCommit(), $package->getDev(), $package->getVersion(), $package->getRequire(), $package->getRequireVersion()];
         }
         $table = new table($output);
-        $table->setHeaders(['package', 'dev', 'version', 'require', 'version']);
+        $table->setHeaders(['package', 'commit', 'dev', 'version', 'require', 'version']);
         $table->setRows($lines);
         $table->render();
         $output->writeln(sprintf('%d packages.', \count($lines)));

@@ -118,6 +118,7 @@ class Loader
         foreach ($packages as $data) {
             $package = $this->getPackage($data['name']);
             $package->setVersion($data['version'])
+                    ->setCommit($data['dist']['reference'])
                     ->setDev($dev);
             foreach ($data['require'] as $name => $dummy) {
                 $this->addRequirer($name, $package);
