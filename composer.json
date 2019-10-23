@@ -45,7 +45,10 @@
     },
     "replace": {},
     "scripts": {
-        "auto-scripts": {},
+        "auto-scripts": {
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+        },
         "post-install-cmd": [
             "@auto-scripts"
         ],
