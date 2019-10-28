@@ -49,12 +49,12 @@ class WhyCommand extends Command
         foreach ($packages as $package) {
             foreach ($package->getRequirers() as $requirer) {
                 if ($package->getName() !== $requirer->getName()) {
-                    $lines[] = [$package->getName(), $requirer->getName(), $requirer->getRequire()];
+                    $lines[] = [$package->getName(), $package->getRequire(), $requirer->getName(), $requirer->getRequire()];
                 }
             }
         }
         $table = new table($output);
-        $table->setHeaders(['why is installed ?', 'because package', 'composer']);
+        $table->setHeaders(['why is installed ?', 'composer', 'because package', 'composer']);
         $table->setRows($lines);
         $table->render();
 
