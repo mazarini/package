@@ -74,7 +74,7 @@ class Package
     public function setCommit(string $commit): self
     {
         if (mb_strlen($commit) > 7) {
-            $this->commit = mb_substr($commit, -7);
+            $this->commit = mb_substr($commit, 0, 7);
         } else {
             $this->commit = $commit;
         }
