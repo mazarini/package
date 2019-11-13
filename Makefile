@@ -59,6 +59,9 @@ beta:
 stable:
 	composer config minimum-stability stable
 
+4.3: stable
+	composer config extra.symfony.require 4.3.*
+
 4.4: beta
 	composer config extra.symfony.require 4.4.*
 

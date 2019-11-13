@@ -37,6 +37,9 @@ matrix:
            INSTALL="install"
 #   Symfony stable version
     - php: 7.2
+      env: SYMFONY="4.3.*"
+           STABILITY="stable"
+    - php: 7.2
       env: SYMFONY="4.4.*"
            STABILITY="beta"
 #   Symfony dev version

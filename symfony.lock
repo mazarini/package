@@ -49,7 +49,7 @@
         "version": "v5.0.0-beta2"
     },
     "symfony/error-handler": {
-        "version": "v4.4.0-beta2"
+        "version": "v5.0.0-beta2"
     },
     "symfony/event-dispatcher": {
         "version": "v5.0.0-beta2"
@@ -157,7 +157,7 @@
         "version": "v1.0.6"
     },
     "symfony/var-dumper": {
-        "version": "v4.4.0-beta2"
+        "version": "v5.0.0-beta2"
     },
     "symfony/var-exporter": {
         "version": "v4.4.0-beta2"
