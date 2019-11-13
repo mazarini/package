@@ -5,19 +5,23 @@
 
 List the installed packages, the required packages and the reasons for installing the packages.
 
+Test with Symfony 4.3, 4.4 and 5.0.
+
 ## Install
 ```
 composer require mazarini/package
 ```
 
 ## Command
-1. bin/console package:require
-2. bin/console package:installed
-3. bin/console package:why
-3. bin/console package:recipe
-4. bin/console package:file
+1. bin/console package:require (compare installed version / require version)
+2. bin/console package:installed (list installed packages)
+3. bin/console package:why (tell who require a package)
+3. bin/console package:recipe (list recipes by package)
+4. bin/console package:file (list packages by recipe)
 
 ## Exemple package:require
+
+### Exemple package:require
 ```
 +--------------------------+-------------+-------------+---------+---------+
 | package                  | require     | version     | install | version |
@@ -33,7 +37,7 @@ composer require mazarini/package
 +--------------------------+-------------+-------------+---------+---------+
 ```
 
-## Exemple package:installed
+### Exemple package:installed
 ```
 +------------------------------------+-----+---------+-------------+-------------+
 | package                            | dev | version | require     | version     |
@@ -79,7 +83,7 @@ composer require mazarini/package
 37 packages.
 ```
 
-## Exemple package:why
+### Exemple package:why
 ```
 +------------------------------------+--------------------------+-------------+
 | why is installed ?                 | because package          | composer    |
@@ -129,7 +133,7 @@ composer require mazarini/package
 +------------------------------------+--------------------------+-------------+
 ```
 
-## Exemple package:recipe
+### Exemple package:recipe
 ```
 +--------------------------+-------------------------------------+--------+
 | Package                  | File                                | delete |
@@ -157,7 +161,7 @@ composer require mazarini/package
 +--------------------------+-------------------------------------+--------+
 ```
 
-## Exemple package:file
+### Exemple package:file
 ```
 +-------------------------------------+--------+--------------------------+
 | File                                | delete | package                  |
@@ -183,4 +187,16 @@ composer require mazarini/package
 | src/Kernel.php                      |        | symfony/framework-bundle |
 | tests/.gitignore                    | delete | symfony/phpunit-bridge   |
 +-------------------------------------+--------+--------------------------+
+```
+
+### Exemple package:unneed
+```
++--------------------+----------+--------------------------+----------+
+| why is installed ? | composer | because package          | composer |
++--------------------+----------+--------------------------+----------+
+| php                | require  | symfony/dotenv           | require  |
+| php                | require  | symfony/flex             | require  |
+| php                | require  | symfony/framework-bundle | require  |
+| php                | require  | symfony/yaml             | require  |
++--------------------+----------+--------------------------+----------+
 ```
