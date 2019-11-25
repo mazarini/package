@@ -37,7 +37,7 @@ class UnneedCommandTest extends KernelTestCase
         ]);
         $output = $commandTester->getDisplay();
         foreach (['php', 'symfony/flex', 'symfony/framework-bundle', 'symfony/dotenv', 'symfony/yaml'] as $package) {
-            $this->assertContains($package, $output);
+            $this->assertStringContainsString($package, $output);
         }
     }
 }

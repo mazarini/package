@@ -37,7 +37,7 @@ class FileCommandTest extends KernelTestCase
         ]);
         $output = $commandTester->getDisplay();
         foreach (['symfony/console', 'bin/console', '.env ', 'symfony/flex', 'config/bootstrap.php'] as $data) {
-            $this->assertContains($data, $output);
+            $this->assertStringContainsString($data, $output);
         }
     }
 }

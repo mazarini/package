@@ -37,7 +37,7 @@ class WhyCommandTest extends KernelTestCase
         ]);
         $output = $commandTester->getDisplay();
         foreach (['symfony/console', 'symfony/flex', 'symfony/framework-bundle', 'symfony/test-pack', 'symfony/yaml'] as $package) {
-            $this->assertContains($package, $output);
+            $this->assertStringContainsString($package, $output);
         }
     }
 }
