@@ -176,7 +176,6 @@ class Loader
                 break;
             case $require:
                 throw new \RuntimeException(sprintf('The require package "%s" is not installed', $name));
-                break;
             default:
                 $package = new Package();
                 $package->setName($name);
