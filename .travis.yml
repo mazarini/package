@@ -37,17 +37,13 @@ matrix:
            INSTALL="install"
 #   Symfony stable version
     - php: 7.2
-      env: SYMFONY="4.3.*"
-           STABILITY="stable"
-    - php: 7.2
       env: SYMFONY="4.4.*"
-           STABILITY="beta"
 #   Symfony dev version
     - php: 7.2
-      env: SYMFONY="4.4.*"
+      env: SYMFONY="5.0.*"
            STABILITY="dev"
     - php: 7.2
-      env: SYMFONY="5.0.*"
+      env: SYMFONY="5.1.*"
            STABILITY="dev"
   allow_failures:
 #   PHP version dev version
@@ -56,10 +52,10 @@ matrix:
            INSTALL="install"
 #   Symfony dev version
     - php: 7.2
-      env: SYMFONY="4.4.*"
+      env: SYMFONY="5.0.*"
            STABILITY="dev"
     - php: 7.2
-      env: SYMFONY="5.0.*"
+      env: SYMFONY="5.1.*"
            STABILITY="dev"
 
 before_install:

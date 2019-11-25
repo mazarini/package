@@ -1,4 +1,4 @@
 parameters:
     autoload_files:
-        - var/cache/phpunit/phpunit-7.5-0/vendor/autoload.php
+        - var/cache/phpunit/phpunit-8.3-0/vendor/autoload.php
     tmpDir: "%currentWorkingDirectory%/var"
