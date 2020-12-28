@@ -18,15 +18,15 @@
     ],
     "require": {
         "php": "^7.4.11|^8.0",
-        "ext-mbstring": "*",
-        "symfony/dotenv": "5.2",
-        "symfony/flex": "^1.4",
-        "symfony/framework-bundle": "^5.2",
-        "symfony/yaml": "^5.2"
+        "ext-mbstring": "*"
     },
     "require-dev": {
         "symfony/console": "^5.2",
-        "symfony/test-pack": "^1.0"
+        "symfony/dotenv": "^5.2",
+        "symfony/flex": "^1.11",
+        "symfony/framework-bundle": "^5.2",
+        "symfony/phpunit-bridge": "^5.2",
+        "symfony/yaml": "^5.2"
     },
     "config": {
         "preferred-install": {
@@ -48,7 +48,8 @@
     "replace": {},
     "scripts": {
         "auto-scripts": {
-            "cache:clear": "symfony-cmd"
+            "cache:clear": "symfony-cmd",
+            "assets:install %PUBLIC_DIR%": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"

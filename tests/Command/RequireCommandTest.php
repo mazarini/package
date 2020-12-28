@@ -25,7 +25,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class RequireCommandTest extends KernelTestCase
 {
-    public function testExecute()
+    public function testExecute(): void
     {
         $kernel = static::createKernel();
         $application = new Application($kernel);
