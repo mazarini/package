@@ -4,6 +4,8 @@
     "description": "List the installed packages, the required packages and the reasons for installing the packages.",
     "keywords": [
         "symfony",
+        "bundle",
+        "command",
         "package"
     ],
     "homepage": "https://github.com/mazarini/package",
@@ -15,15 +17,15 @@
         }
     ],
     "require": {
-        "php": "^7.1.3|^8.0",
+        "php": "^7.4.11|^8.0",
         "ext-mbstring": "*",
-        "symfony/dotenv": "^4.4|^5.0",
+        "symfony/dotenv": "5.2",
         "symfony/flex": "^1.4",
-        "symfony/framework-bundle": "^4.4|^5.0",
-        "symfony/yaml": "^4.4|^5.0"
+        "symfony/framework-bundle": "^5.2",
+        "symfony/yaml": "^5.2"
     },
     "require-dev": {
-        "symfony/console": "^4.4|^5.0",
+        "symfony/console": "^5.2",
         "symfony/test-pack": "^1.0"
     },
     "config": {

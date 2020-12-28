@@ -32,7 +32,7 @@ if (is_array($env)) {
     throw new RuntimeException('Please run "composer require symfony/dotenv" to load the ".env" files configuring the application.');
 } else {
     // load all the .env files
-    (new Dotenv(false))->loadEnv(dirname(__DIR__).'/.env');
+    (new Dotenv())->loadEnv(dirname(__DIR__).'/.env');
 }
 
 $_SERVER += $_ENV;

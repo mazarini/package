@@ -1,9 +1,11 @@
 
 init :
 	composer self-update
+	symfony self-update
 	composer global update
 	composer update
 	yarn install
+	yarn run encore dev
 
 asset:
 	yarn run encore dev
@@ -18,17 +20,22 @@ security:
 composer:
 	composer -vv validate --strict
 
+twig:
+	bin/console lint:twig templates/ lib/Resources/views/
+	twigcs templates -vv
+	twigcs lib/Resources/views -vv
+
 yaml:
-	bin/console lint:yaml lib/Resources/config config phpstan.neon.dist .travis.yml
+	bin/console lint:yaml config lib/Resources/config phpstan.neon.dist .travis.yml
 
 cs:
-	php-cs-fixer fix
+	~/.config/composer/vendor/bin/php-cs-fixer fix
 
 stan:
-	if [ ! -d "var/cache/phpunit" ]; then vendor/bin/simple-phpunit install -v; fi
-	phpstan analyse lib src tests --level max
+	if [ ! -d "var/cache/phpunit/phpunit-8.3-0" ]; then vendor/bin/simple-phpunit install -v; fi
+	~/.config/composer/vendor/bin/phpstan analyse src tests --level max
 
-validate: security composer yaml stan cs
+validate: security composer twig yaml stan cs
 
 ############################################
 #          P H P   V E R S I O N           #
@@ -62,26 +69,32 @@ stable:
 4.3: stable
 	composer config extra.symfony.require 4.3.*
 
-4.4: beta
+4.4: stable
 	composer config extra.symfony.require 4.4.*
 
-5.0: beta
+5.0: stable
 	composer config extra.symfony.require 5.0.*
+
+5.1: dev
+	composer config extra.symfony.require 5.1.*
 
 ############################################
 #               S E R V E R                #
 ############################################
 
 start:
-	bin/console server:start
+	symfony server:stop
+	symfony server:start -d
+	symfony server:list
 
 stop:
-	bin/console server:stop
+	symfony server:stop
+	symfony server:list
 
-restart: stop start
+restart: start
 
 status:
-	bin/console server:status
+	symfony server:status
 
 ############################################
 #             D A T A B A S E              #
@@ -96,8 +109,9 @@ dbinit:
 
 dbreset: dbdrop dbinit
 
-fixtures:
+fixtures: dbreset
 	bin/console doctrine:fixtures:load
+	cp var/data/sqlite.db var/data/origine.db
 
 ############################################
 #                T E S T S                 #
@@ -108,12 +122,13 @@ fixtures:
 clean:
 	bin/console cache:clear --env=test
 	bin/console cache:clear --env=dev
+	cp var/data/origine.db var/data/sqlite.db
 
 test:
-	vendor/bin/simple-phpunit -v
+	bin/phpunit -v
 
 cover-text: clean
-	vendor/bin/simple-phpunit -v --coverage-text
+	bin/phpunit -v --coverage-text
 
 cover: clean
-	vendor/bin/simple-phpunit --coverage-html var/test-coverage
+	bin/phpunit --coverage-html var/test-coverage

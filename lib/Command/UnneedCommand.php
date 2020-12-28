@@ -48,8 +48,8 @@ class UnneedCommand extends Command
         $packages = $loader->getWhy();
         foreach ($packages as $package) {
             foreach ($package->getRequirers() as $requirer) {
-                if (($package->getName() !== $requirer->getName()) and $package->isRequire()) {
-                    if ('require' === $requirer->getRequire() or $package->isRequireDev()) {
+                if (($package->getName() !== $requirer->getName()) && $package->isRequire()) {
+                    if ('require' === $requirer->getRequire() || $package->isRequireDev()) {
                         $lines[] = [$package->getName(), $package->getRequire(), $requirer->getName(), $requirer->getRequire()];
                     }
                 }
