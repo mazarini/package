@@ -36,7 +36,7 @@ class RecipeCommandTest extends KernelTestCase
             'command' => $command->getName(),
         ]);
         $output = $commandTester->getDisplay();
-        foreach (['symfony/console', 'bin/console', '.env ', 'symfony/flex', 'config/bootstrap.php'] as $data) {
+        foreach (['symfony/console', 'bin/console', '.env ', 'symfony/flex'] as $data) {
             $this->assertStringContainsString($data, $output);
         }
     }

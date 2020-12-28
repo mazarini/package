@@ -36,7 +36,7 @@ class UnneedCommandTest extends KernelTestCase
             'command' => $command->getName(),
         ]);
         $output = $commandTester->getDisplay();
-        foreach (['php', 'symfony/flex', 'symfony/framework-bundle', 'symfony/dotenv', 'symfony/yaml'] as $package) {
+        foreach (['why', 'composer'] as $package) {
             $this->assertStringContainsString($package, $output);
         }
     }
